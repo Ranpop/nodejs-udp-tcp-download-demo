@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript">
+    var testPos = new Array("100-100", "200-200", "300-200", "400-200", "500-200");
+    var index = 0;
+    function testLoadImage(){
+        if (index < 5){
+            document.getElementById("tableid").rows[1].cells[3].innerHTML = testPos[index];
+            index += 1;
+        }
+        else{
+            index = 0;
+        }
+        console.log("testLoadImage count : "+index);
+        //window.setInterval(testLoadImage);
+    }
+
+    function loadWarehouse(imagesrc){
+            var canVas = document.getElementById("warehouse");
+            var ctx = canVas.getContext("2d");
+            var img = new Image()
+            img.src = imagesrc
+            ctx.drawImage(img, 0, 0);
+     }
+
+     function rectImage(){
+        var canVas=document.getElementById("warehouse");
+        var ctx=canVas.getContext("2d");
+        var imgfork=new Image()
+        imgfork.src="../images/forklift.jpg"
+        console.log("fork width: "+imgfork.width+" height: "+imgfork.height)
+        ctx.clearRect(200, 100, imgfork.width, imgfork.height);
+        ctx.restore();
+     }
+
+     var lastforkPosX = 200;
+     var lastforkPosY = 100;
+     function loadImageFork(){
+        var canVas=document.getElementById("warehouse");
+        var ctx=canVas.getContext("2d");
+        var imgfork=new Image()
+        imgfork.src="../images/forklift.jpg"
+        ctx.clearRect(lastforkPosX, lastforkPosY, imgfork.width, imgfork.height);
+        ctx.restore();
+
+        //var forkStr = document.getElementById("tableid").rows[1].cells[3].innerHTML;
+        forkPosStr = testPos[index];
+        var i = forkPosStr.indexOf("-");
+        if (-1 == i){
+            lastforkPosX = 200;
+            lastforkPosY = 100;
+            ctx.drawImage(imgfork, 200, 100);
+        }
+        else{
+            lastforkPosX = parseInt(forkPosStr.substring(0, i));
+            lastforkPosY = parseInt(forkPosStr.substring(i+1));
+            ctx.drawImage(imgfork, lastforkPosX, lastforkPosY);
+        }
+    }
+
+     var clickFlag = false;
+     var lastPosX = 0;
+     var lastPosY = 0;
+     function setPostion()
+     {
+     	if (!clickFlag)
+     	{
+     		return;
+     	}
+
+	var canVas=document.getElementById("warehouse");
+	var cxt=canVas.getContext("2d");
+	cxt.fillStyle="#FF0000";
+	cxt.beginPath();
+	cxt.arc(event.offsetX, event.offsetY, 7, 0, Math.PI*2, true);
+	cxt.closePath();
+	cxt.fill();
+
+	if ((0 == lastPosX) && (0 == lastPosY) ){
+		lastPosX = event.offsetX; lastPosY = event.offsetY;
+	}
+	else
+	{
+		cxt.moveTo(lastPosX,lastPosY);
+		cxt.lineTo(event.offsetX,event.offsetY);
+		cxt.stroke();
+		lastPosX = event.offsetX; lastPosY = event.offsetY;
+	}
+	document.getElementById("cmdid").value += "X:" + event.offsetX.toString() + "Y:"+event.offsetY.toString();
+     }
+
+     function setPosFlag()
+     {
+     	if (clickFlag){
+     		clickFlag = false;
+     		var canVas=document.getElementById("warehouse");
+     		document.getElementById("postion").innerHTML = "setPostion";
+     		var width = canVas.width;
+		var height = canVas.height;
+		canVas.width = width;
+		canVas.height = height;
+		lastPosX = 0;
+     		lastPosY = 0;
+		loadImage();
+     	}
+     	else{
+     		document.getElementById("postion").innerHTML = "clearPostion";
+     		clickFlag = true;
+     	}
+     }
+
+     </script>
+     </head>
+     <body>
+     <h2><%= title %></h2>
+     <% if (connected) { %>
+     	<p>There are <%= num %> fork connected</p>
+     <% }else { %>
+     	<p>Waitting for client connect...</p>
+     <% } %>
+     <!--p>WareHouse: </p-->
+     <button name="display" value="display" onclick="window.setInterval('testLoadImage()', 250)">setTest</button> 
+     <button name="display" value="display" onclick="window.setInterval('loadImageFork()', 500)">displayFork</button>
+     <button name="display" value="display" id="postion" onclick="setPosFlag()">setPostion</button>
+     <button name="display" id="cmdid" value="" onclick="javascript:setCommand()">setCmd</button>  <br>
+     <table style="float:right" border="1" id = "tableid" >
+     	<tr>
+     		<th>库房编号</th>
+     		<th>叉车编号</th>
+     		<th>事项</th>
+    		<th>信息</th>	
+     	</tr>
+     	<tr>
+     		<td>0</td>
+     		<td>0</td>
+     		<td>车坐标</td>
+    		<td id="forkpos">100:200</td>
+ 	 </tr>
+ 	 <tr>
+ 	 	<td>0</td>
+ 	 	<td>0</td>
+     		<td>轮转向角</td>
+    		<td>50</td>
+ 	 </tr>
+              <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>航向角</td>
+                        <td>60</td>
+              </tr>
+              <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>车速</td>
+                        <td>100</td>
+              </tr>
+              <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>叉头方向</td>
+                        <td>30</td>
+              </tr>
+     </table>
+     <canvas id="warehouse" width="1109" height="402" style="background-image:url(../images/warehouse.jpg);" onclick="setPostion()"></canvas><br>
+    <img src="", id="imageid", name="test data">
+     <!--div>forkpostion:<a id="forkpos" role="button">200-180</a></div-->
+     <script src="http://192.168.1.112:3000/socket.io/socket.io.js"></script>    
+     <script src="../javascripts/websocketclient.js"></script>    
+     </body>
+</html>
+
+     <!--div>
+         <canvas id="warehouse" width="1109" height="402"  style="position:absolute; z-index:2; filter:alpha(opacity=50);  -moz-opacity:0.5;  -khtml-opacity: 0.5;  opacity: 0.5;  "></canvas>
+         <canvas id="forklift" width="1109" height="402" style="position:absolute; z-index:1;"></canvas>
+     </div-->

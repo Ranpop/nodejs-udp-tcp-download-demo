@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript">
+    function loadWarehouse(imagesrc){
+            var canVas = document.getElementById("warehouse");
+            var ctx = canVas.getContext("2d");
+            var img = new Image()
+            img.src = imagesrc
+            ctx.drawImage(img, 0, 0);
+     }
+     </script>
+     </head>
+     <body>
+     <h2>ForkInformation</h2>
+     <!--p>WareHouse: </p-->
+     <button name="display" value="display" onclick="">Close</button>
+     <table style="float:right" border="1" id = "tableid" >
+     	<tr>
+     		<th>库房编号</th>
+     		<th>叉车编号</th>
+     		<th>事项</th>
+    		<th>信息</th>	
+     	</tr>
+     	<tr>
+     		<td>0</td>
+     		<td>0</td>
+     		<td>车坐标</td>
+    		<td id="forkpos">100:200</td>
+ 	 </tr>
+ 	 <tr>
+ 	 	<td>0</td>
+ 	 	<td>0</td>
+     		<td>轮转向角</td>
+    		<td>50</td>
+ 	 </tr>
+              <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>航向角</td>
+                        <td>60</td>
+              </tr>
+              <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>车速</td>
+                        <td>100</td>
+              </tr>
+              <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>叉头方向</td>
+                        <td>30</td>
+              </tr>
+     </table>
+     <canvas id="warehouse" width="500" height="402" onclick="setPostion()"></canvas><br>
+    <img src="", id="imageid", name="test data" style="dispaly:none;">
+     <!--div>forkpostion:<a id="forkpos" role="button">200-180</a></div-->
+     <script src="http://192.168.1.112:3000/socket.io/socket.io.js"></script>    
+     <script src="../javascripts/websocketclient.js"></script>    
+     </body>
+</html>
